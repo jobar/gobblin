@@ -20,8 +20,10 @@ package org.apache.gobblin.publisher;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.apache.gobblin.configuration.ConfigurationKeys;
 import org.apache.gobblin.configuration.State;
 import org.apache.gobblin.configuration.WorkUnitState;
+import org.apache.hadoop.fs.Path;
 
 
 /**
@@ -49,6 +51,12 @@ public class BaseDataPublisherWithHiveRegistration extends BaseDataPublisher {
   @Override
   public void publish(Collection<? extends WorkUnitState> states) throws IOException {
     super.publish(states);
+
+    // PUBLISHER_DIRS key must be updated for HiveRegistrationPublisher
+    for (Path path : this.publisherOutputDirs) {
+      this.state.appendToSetProp(ConfigurationKeys.PUBLISHER_DIRS, path.toString());
+    }
+
     this.hivePublisher.publish(states);
   }
 

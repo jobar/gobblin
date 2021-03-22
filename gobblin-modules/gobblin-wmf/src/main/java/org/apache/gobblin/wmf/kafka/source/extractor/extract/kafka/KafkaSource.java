@@ -15,30 +15,23 @@
  * limitations under the License.
  */
 
-repositories {
-  mavenCentral()
-  maven {
-    url "https://plugins.gradle.org/m2/"
-  }
-  maven {
-    url "http://packages.confluent.io/maven/"
-  }
-  maven {
-    url "https://repository.apache.org/content/repositories/snapshots"
-  }
-  maven {
-    url "https://linkedin.jfrog.io/artifactory/open-source/"
-  }
-  maven {
-    url "https://archiva.wikimedia.org/repository/releases/"
-  }
-  jcenter()
-}
+package org.apache.gobblin.wmf.kafka.source.extractor.extract.kafka;
 
-try {
-  subprojects {
-    project.repositories.addAll(rootProject.repositories)
-  }
-} catch (Throwable t) {
-  //nothing
+
+import org.apache.gobblin.configuration.SourceState;
+import org.apache.gobblin.source.extractor.extract.kafka.KafkaTopic;
+import org.apache.gobblin.util.DatasetFilterUtils;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
+public abstract class KafkaSource<S, D> extends org.apache.gobblin.source.extractor.extract.kafka.KafkaSource<S, D> {
+
+    @Override
+    protected List<KafkaTopic> getFilteredTopics(SourceState state) {
+        List<Pattern> blacklist = DatasetFilterUtils.getPatternList(state, TOPIC_BLACKLIST);
+        List<Pattern> whitelist = DatasetFilterUtils.getPatternList(state, TOPIC_WHITELIST);
+        return this.kafkaConsumerClient.get().getFilteredTopics(blacklist, whitelist);
+    }
+
 }

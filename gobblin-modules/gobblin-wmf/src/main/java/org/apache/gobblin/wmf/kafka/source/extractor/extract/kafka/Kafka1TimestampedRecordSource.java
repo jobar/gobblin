@@ -15,30 +15,15 @@
  * limitations under the License.
  */
 
-repositories {
-  mavenCentral()
-  maven {
-    url "https://plugins.gradle.org/m2/"
-  }
-  maven {
-    url "http://packages.confluent.io/maven/"
-  }
-  maven {
-    url "https://repository.apache.org/content/repositories/snapshots"
-  }
-  maven {
-    url "https://linkedin.jfrog.io/artifactory/open-source/"
-  }
-  maven {
-    url "https://archiva.wikimedia.org/repository/releases/"
-  }
-  jcenter()
-}
+package org.apache.gobblin.wmf.kafka.source.extractor.extract.kafka;
 
-try {
-  subprojects {
-    project.repositories.addAll(rootProject.repositories)
-  }
-} catch (Throwable t) {
-  //nothing
+import org.apache.gobblin.configuration.WorkUnitState;
+import org.apache.gobblin.source.extractor.Extractor;
+
+
+public class Kafka1TimestampedRecordSource extends KafkaSource<Object, Object> {
+    @Override
+    public Extractor<Object, Object> getExtractor(WorkUnitState state) {
+        return new Kafka1TimestampedRecordExtractor(state);
+    }
 }

@@ -338,6 +338,39 @@ public class ParallelRunner implements Closeable {
     }), "Move " + src + " to " + dst));
   }
 
+
+  /**
+   * Touch a {@link Path}.
+   *
+   * <p>
+   *   This method submits a task to touch a {@link Path} and returns immediately
+   *   after the task is submitted.
+   * </p>
+   *
+   * @param path path to be touched.
+   */
+  public void touchPath(final Path path) {
+    this.futures.add(new NamedFuture(this.executor.submit(new Callable<Void>() {
+      @Override
+      public Void call() throws Exception {
+        Lock lock = ParallelRunner.this.locks.get(path.toString());
+        lock.lock();
+        try {
+          if (fs.isDirectory(path.getParent())) {
+            if (!fs.exists(path)) {
+              fs.create(path).close();
+            }
+          } else {
+            LOGGER.warn(String.format("Failed to touch %s as parent is not an existing folder", path));
+          }
+          return null;
+        } finally {
+          lock.unlock();
+        }
+      }
+    }), "Touch path " + path));
+  }
+
   /**
    * Submit a callable to the thread pool
    *

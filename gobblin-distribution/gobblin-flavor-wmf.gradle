@@ -20,8 +20,6 @@ dependencies {
   compile project(':gobblin-example')
   // Contains json timestamp extraction for partitioning
   compile project(':gobblin-modules:gobblin-wmf')
-  // Needed since it contains serializer code for kafka
-  compile project(':gobblin-modules:gobblin-kafka-08')
   // Actual Kafka client to be used
   compile project(':gobblin-modules:gobblin-kafka-1')
 }

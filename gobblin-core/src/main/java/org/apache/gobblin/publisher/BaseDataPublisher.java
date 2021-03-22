@@ -421,13 +421,9 @@ public class BaseDataPublisher extends SingleTaskDataPublisher {
         LOG.info("Deleting publisher output dir " + publisherOutputDir);
         this.publisherFileSystemByBranches.get(branchId).delete(publisherOutputDir, true);
       } else {
-        // Create the parent directory of the final output directory if it does not exist
-        WriterUtils.mkdirsWithRecursivePermissionWithRetry(this.publisherFileSystemByBranches.get(branchId),
-            publisherOutputDir.getParent(), this.permissions.get(branchId), retrierConfig);
+        addWriterOutputToNewDir(writerOutputDir, publisherOutputDir, state, branchId, parallelRunner);
+        writerOutputPathsMoved.add(writerOutputDir);
       }
-
-      movePath(parallelRunner, state, writerOutputDir, publisherOutputDir, branchId);
-      writerOutputPathsMoved.add(writerOutputDir);
     }
   }
 
@@ -473,6 +469,15 @@ public class BaseDataPublisher extends SingleTaskDataPublisher {
 
       movePath(parallelRunner, workUnitState, taskOutputPath, publisherOutputPath, branchId);
     }
+  }
+
+  protected void addWriterOutputToNewDir(Path writerOutput, Path publisherOutput,
+      WorkUnitState workUnitState, int branchId, ParallelRunner parallelRunner)
+      throws IOException {
+    // Create the parent directory of the final output directory if it does not exist
+    WriterUtils.mkdirsWithRecursivePermissionWithRetry(this.publisherFileSystemByBranches.get(branchId),
+            publisherOutput.getParent(), this.permissions.get(branchId), retrierConfig);
+    movePath(parallelRunner, state, writerOutput, publisherOutput, branchId);
   }
 
   protected void addWriterOutputToExistingDir(Path writerOutputDir, Path publisherOutputDir,

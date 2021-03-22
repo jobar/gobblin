@@ -17,23 +17,15 @@
 
 package org.apache.gobblin.publisher;
 
-import java.io.IOException;
-import java.util.List;
-
+import org.apache.gobblin.configuration.State;
+import org.apache.gobblin.configuration.WorkUnitState;
+import org.apache.gobblin.util.FileListUtils;
+import org.apache.gobblin.util.ParallelRunner;
+import org.apache.gobblin.util.WriterUtils;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 
-import com.google.common.collect.Lists;
-
-import org.apache.gobblin.configuration.State;
-import org.apache.gobblin.configuration.WorkUnitState;
-import org.apache.gobblin.dataset.DatasetDescriptor;
-import org.apache.gobblin.dataset.Descriptor;
-import org.apache.gobblin.util.FileListUtils;
-import org.apache.gobblin.util.ForkOperatorUtils;
-import org.apache.gobblin.util.ParallelRunner;
-import org.apache.gobblin.util.WriterUtils;
-import org.apache.gobblin.writer.partitioner.TimeBasedWriterPartitioner;
+import java.io.IOException;
 
 
 /**
@@ -51,6 +43,23 @@ public class TimePartitionedDataPublisher extends BaseDataPublisher {
 
   /**
    * This method needs to be overridden for TimePartitionedDataPublisher, since the output folder structure
+   * contains timestamp, we need to move the files recursively.
+   *
+   * For example, move {writerOutput}/2015/04/08/15/output.avro to {publisherOutput}/2015/04/08/15/output.avro
+   */
+  @Override
+  protected void addWriterOutputToNewDir(Path writerOutput, Path publisherOutput, WorkUnitState workUnitState,
+      int branchId, ParallelRunner parallelRunner) throws IOException {
+
+    // Create the final output directory
+    WriterUtils.mkdirsWithRecursivePermissionWithRetry(this.publisherFileSystemByBranches.get(branchId),
+            publisherOutput, this.permissions.get(branchId), retrierConfig);
+    // Now that the parent folder has been created, use addWriterOutputToExistingDir
+    this.addWriterOutputToExistingDir(writerOutput, publisherOutput, workUnitState, branchId, parallelRunner);
+  }
+
+  /**
+   * This method needs to be overridden for TimePartitionedDataPublisher, since the output folder structure
    * contains timestamp, we have to move the files recursively.
    *
    * For example, move {writerOutput}/2015/04/08/15/output.avro to {publisherOutput}/2015/04/08/15/output.avro
@@ -59,11 +68,9 @@ public class TimePartitionedDataPublisher extends BaseDataPublisher {
   protected void addWriterOutputToExistingDir(Path writerOutput, Path publisherOutput, WorkUnitState workUnitState,
       int branchId, ParallelRunner parallelRunner) throws IOException {
 
-    for (FileStatus status : FileListUtils.listFilesRecursively(this.writerFileSystemByBranches.get(branchId),
-        writerOutput)) {
+    for (FileStatus status : FileListUtils.listFilesRecursively(this.writerFileSystemByBranches.get(branchId), writerOutput)) {
       String filePathStr = status.getPath().toString();
-      String pathSuffix =
-          filePathStr.substring(filePathStr.indexOf(writerOutput.toString()) + writerOutput.toString().length() + 1);
+      String pathSuffix = filePathStr.substring(filePathStr.indexOf(writerOutput.toString()) + writerOutput.toString().length() + 1);
       Path outputPath = new Path(publisherOutput, pathSuffix);
 
       WriterUtils.mkdirsWithRecursivePermissionWithRetry(this.publisherFileSystemByBranches.get(branchId), outputPath.getParent(),
