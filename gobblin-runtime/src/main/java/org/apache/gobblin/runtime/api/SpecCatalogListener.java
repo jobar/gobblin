@@ -20,6 +20,7 @@ package org.apache.gobblin.runtime.api;
 import java.net.URI;
 import java.util.Properties;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import org.apache.gobblin.runtime.spec_catalog.AddSpecResponse;
@@ -44,7 +45,7 @@ public interface SpecCatalogListener {
   public static class AddSpecCallback extends Callback<SpecCatalogListener, AddSpecResponse> {
     private final Spec _addedSpec;
     public AddSpecCallback(Spec addedSpec) {
-      super(Objects.toStringHelper("onAddSpec").add("addedSpec", addedSpec).toString());
+      super(MoreObjects.toStringHelper("onAddSpec").add("addedSpec", addedSpec).toString());
       _addedSpec = addedSpec;
     }
 
@@ -60,7 +61,7 @@ public interface SpecCatalogListener {
     private final Properties _headers;
 
     public DeleteSpecCallback(URI deletedSpecURI, String deletedSpecVersion, Properties headers) {
-      super(Objects.toStringHelper("onDeleteSpec")
+      super(MoreObjects.toStringHelper("onDeleteSpec")
           .add("deletedSpecURI", deletedSpecURI)
           .add("deletedSpecVersion", deletedSpecVersion)
           .toString());
@@ -78,7 +79,7 @@ public interface SpecCatalogListener {
   public static class UpdateSpecCallback extends Callback<SpecCatalogListener, Void> {
     private final Spec _updatedSpec;
     public UpdateSpecCallback(Spec updatedSpec) {
-      super(Objects.toStringHelper("onUpdateSpec")
+      super(MoreObjects.toStringHelper("onUpdateSpec")
           .add("updatedSpec", updatedSpec).toString());
       _updatedSpec = updatedSpec;
     }

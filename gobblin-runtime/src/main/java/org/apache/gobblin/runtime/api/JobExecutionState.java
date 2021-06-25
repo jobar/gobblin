@@ -26,10 +26,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
+import com.google.common.base.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -108,7 +105,7 @@ public class JobExecutionState implements JobExecutionStatus {
   @Override public String toString() {
     this.changeLock.lock();
     try {
-      return Objects.toStringHelper(JobExecutionState.class.getSimpleName())
+      return MoreObjects.toStringHelper(JobExecutionState.class.getSimpleName())
               .add("jobExecution", this.jobExecution)
               .add("runningState", this.runningState)
               .add("stage", this.stage)

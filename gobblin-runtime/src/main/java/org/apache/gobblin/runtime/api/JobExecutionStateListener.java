@@ -16,6 +16,7 @@
  */
 package org.apache.gobblin.runtime.api;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import org.apache.gobblin.runtime.JobState;
@@ -41,7 +42,7 @@ public interface JobExecutionStateListener {
     public StatusChangeCallback(final JobExecutionState state,
                                 final RunningState previousStatus,
                                 final RunningState newStatus) {
-      super(Objects.toStringHelper("onStatusChange")
+      super(MoreObjects.toStringHelper("onStatusChange")
                    .add("state", state)
                    .add("previousStatus", previousStatus)
                    .add("newStatus", newStatus)
@@ -67,7 +68,7 @@ public interface JobExecutionStateListener {
 
     public StageTransitionCallback(final JobExecutionState state, final String previousStage,
                                    final String newStage) {
-      super(Objects.toStringHelper("onStageTransition")
+      super(MoreObjects.toStringHelper("onStageTransition")
                    .add("state", state)
                    .add("previousStage", previousStage)
                    .add("newStage", newStage)
@@ -94,7 +95,7 @@ public interface JobExecutionStateListener {
 
     public MetadataChangeCallback(final JobExecutionState state, final String key,
                                   final Object oldValue, final Object newValue) {
-      super(Objects.toStringHelper("onMetadataChange")
+      super(MoreObjects.toStringHelper("onMetadataChange")
                    .add("state", state)
                    .add("key", key)
                    .add("oldValue", oldValue)

@@ -16,6 +16,7 @@
  */
 package org.apache.gobblin.runtime.api;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -36,7 +37,7 @@ public interface JobLifecycleListener
     private final JobExecutionDriver _jobDriver;
 
     public JobLaunchCallback(JobExecutionDriver jobDriver) {
-      super(Objects.toStringHelper("onJobLaunch").add("jobDriver", jobDriver).toString());
+      super(MoreObjects.toStringHelper("onJobLaunch").add("jobDriver", jobDriver).toString());
       Preconditions.checkNotNull(jobDriver);
       _jobDriver = jobDriver;
     }
