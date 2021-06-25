@@ -149,13 +149,13 @@ public class HiveDataset implements PrioritizedCopyableDataset {
   public Iterator<FileSet<CopyEntity>> getFileSetIterator(FileSystem targetFs, CopyConfiguration configuration)
       throws IOException {
     if (!canCopyTable()) {
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
     try {
       return new HiveCopyEntityHelper(this, configuration, targetFs).getCopyEntities(configuration);
     } catch (IOException ioe) {
       log.error("Failed to copy table " + this.table, ioe);
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
   }
 
@@ -168,7 +168,7 @@ public class HiveDataset implements PrioritizedCopyableDataset {
       Comparator<FileSet<CopyEntity>> prioritizer, PushDownRequestor<FileSet<CopyEntity>> requestor)
       throws IOException {
     if (!canCopyTable()) {
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
     try {
       List<FileSet<CopyEntity>> fileSetList = Lists.newArrayList(new HiveCopyEntityHelper(this, configuration, targetFs)
@@ -177,7 +177,7 @@ public class HiveDataset implements PrioritizedCopyableDataset {
       return fileSetList.iterator();
     } catch (IOException ioe) {
       log.error("Failed to copy table " + this.table, ioe);
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
   }
 

@@ -58,7 +58,7 @@ public class FlowStatusTest {
     @Override
     public Iterator<org.apache.gobblin.service.monitoring.JobStatus> getJobStatusesForFlowExecution(String flowName,
         String flowGroup, long flowExecutionId, String jobGroup, String jobName) {
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
 
     @Override

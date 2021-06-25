@@ -18,11 +18,7 @@
 package org.apache.gobblin.service.monitoring;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
@@ -73,14 +69,14 @@ public class FsJobStatusRetriever extends JobStatusRetriever {
       for (String tableName: tableNames) {
         List<State> jobStates = this.stateStore.getAll(storeName, tableName);
         if (jobStates.isEmpty()) {
-          return Iterators.emptyIterator();
+          return Collections.emptyIterator();
         }
         jobStatuses.add(getJobStatus(jobStates.get(0)));
       }
       return jobStatuses.iterator();
     } catch (IOException e) {
       log.error("IOException encountered when retrieving job statuses for flow: {},{},{}", flowGroup, flowName, flowExecutionId, e);
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
   }
 
@@ -97,13 +93,13 @@ public class FsJobStatusRetriever extends JobStatusRetriever {
       String tableName = KafkaJobStatusMonitor.jobStatusTableName(flowExecutionId, jobGroup, jobName);
       List<State> jobStates = this.stateStore.getAll(storeName, tableName);
       if (jobStates.isEmpty()) {
-        return Iterators.emptyIterator();
+        return Collections.emptyIterator();
       } else {
         return Iterators.singletonIterator(getJobStatus(jobStates.get(0)));
       }
     } catch (IOException e) {
       log.error("Exception encountered when listing files", e);
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
   }
 

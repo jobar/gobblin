@@ -440,7 +440,7 @@ public class FileAwareInputStreamDataWriter extends InstrumentedDataWriter<FileA
       setFilePermissions(copyableFile);
 
       Iterator<OwnerAndPermission> ancestorOwnerAndPermissionIt =
-          copyableFile.getAncestorsOwnerAndPermission() == null ? Iterators.<OwnerAndPermission>emptyIterator()
+          copyableFile.getAncestorsOwnerAndPermission() == null ? Collections.emptyIterator()
               : copyableFile.getAncestorsOwnerAndPermission().iterator();
 
       ensureDirectoryExists(this.fs, outputFilePath.getParent(), ancestorOwnerAndPermissionIt);

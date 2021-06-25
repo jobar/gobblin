@@ -25,6 +25,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class LocalFsJobStatusRetriever extends JobStatusRetriever {
       jobStatus = JobStatus.builder().flowName(flowName).flowGroup(flowGroup).flowExecutionId(flowExecutionId).
           jobName(jobName).jobGroup(jobGroup).jobExecutionId(flowExecutionId).eventName(ExecutionStatus.PENDING.name()).build();
     } else {
-      return Iterators.emptyIterator();
+      return Collections.emptyIterator();
     }
 
     jobStatuses.add(jobStatus);
